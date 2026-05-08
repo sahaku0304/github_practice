@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="GitHub初心者向けの基本概念と実務フローを短時間で学べる教材です。" />
+  <title>GitHub基礎解説｜初学者向け教材</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --text: #0f172a;
+      --muted: #475569;
+      --accent: #0d9488;
+      --accent-contrast: #ffffff;
+      --border: #e2e8f0;
+      --highlight-bg: #fef3c7;
+      --highlight-text: #92400e;
+      --code-bg: #1e293b;
+      --code-text: #e2e8f0;
+      --note-bg: #ecfeff;
+      --note-border: #06b6d4;
+      --nav-shadow: 0 1px 0 rgba(15, 23, 42, 0.06), 0 4px 16px rgba(15, 23, 42, 0.06);
+      --radius: 10px;
+      --font-sans: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", system-ui, sans-serif;
+      --font-mono: ui-monospace, "Cascadia Code", "SF Mono", Menlo, monospace;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--font-sans);
+      font-size: 1rem;
+      line-height: 1.7;
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    .skip-link {
+      position: absolute;
+      left: -9999px;
+      z-index: 100;
+      padding: 0.75rem 1rem;
+      background: var(--accent);
+      color: var(--accent-contrast);
+      text-decoration: none;
+      border-radius: var(--radius);
+    }
+
+    .skip-link:focus {
+      left: 1rem;
+      top: 1rem;
+    }
+
+    header.hero {
+      padding: 1.5rem 1.25rem 0;
+      max-width: 48rem;
+      margin: 0 auto;
+    }
+
+    header.hero h1 {
+      font-size: clamp(1.5rem, 4vw, 1.85rem);
+      font-weight: 700;
+      margin: 0 0 0.5rem;
+      line-height: 1.35;
+    }
+
+    header.hero .lead {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    nav.toc {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(248, 250, 252, 0.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      box-shadow: var(--nav-shadow);
+      margin-top: 1.25rem;
+    }
+
+    .toc-inner {
+      max-width: 48rem;
+      margin: 0 auto;
+      padding: 0.65rem 1.25rem;
+    }
+
+    .toc-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin: 0 0 0.4rem;
+    }
+
+    .toc-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem 0.75rem;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .toc-list a {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    .toc-list a:hover,
+    .toc-list a:focus-visible {
+      text-decoration: underline;
+      outline: none;
+    }
+
+    main {
+      max-width: 48rem;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem 4rem;
+    }
+
+    section {
+      margin-bottom: 3.5rem;
+      scroll-margin-top: 5.5rem;
+    }
+
+    section h2 {
+      font-size: 1.35rem;
+      margin: 0 0 0.75rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--accent);
+    }
+
+    .summary {
+      margin: 0 0 1.25rem;
+      padding: 1rem 1.1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+
+    .summary p {
+      margin: 0 0 0.5rem;
+    }
+
+    .summary p:last-child {
+      margin-bottom: 0;
+    }
+
+    ul,
+    ol {
+      margin: 0 0 1rem;
+      padding-left: 1.25rem;
+    }
+
+    li {
+      margin-bottom: 0.35rem;
+    }
+
+    .term {
+      font-weight: 600;
+      background: linear-gradient(transparent 60%, var(--highlight-bg) 60%);
+      color: var(--highlight-text);
+    }
+
+    .note {
+      margin-top: 1.25rem;
+      padding: 1rem 1.1rem;
+      background: var(--note-bg);
+      border-left: 4px solid var(--note-border);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      font-size: 0.9rem;
+    }
+
+    .note strong {
+      display: block;
+      margin-bottom: 0.35rem;
+      color: var(--text);
+    }
+
+    .code-block {
+      position: relative;
+      margin: 1rem 0;
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .code-block pre {
+      margin: 0;
+      padding: 1rem 1rem 1rem;
+      background: var(--code-bg);
+      color: var(--code-text);
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      line-height: 1.55;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .code-block .copy-btn {
+      position: absolute;
+      top: 0.45rem;
+      right: 0.45rem;
+      padding: 0.35rem 0.65rem;
+      font-size: 0.72rem;
+      font-family: var(--font-sans);
+      font-weight: 600;
+      color: var(--code-text);
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .code-block .copy-btn:hover,
+    .code-block .copy-btn:focus-visible {
+      background: rgba(255, 255, 255, 0.2);
+      outline: none;
+    }
+
+    .flow-diagram {
+      margin: 1.5rem 0;
+      padding: 1.25rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow-x: auto;
+    }
+
+    .flow-diagram svg {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+
+    .exercise-area {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+    }
+
+    .exercise-steps {
+      list-style: none;
+      padding-left: 0;
+      margin: 0 0 1rem;
+      display: grid;
+      gap: 0.5rem;
+    }
+
+    .exercise-steps li {
+      margin: 0;
+    }
+
+    .exercise-steps label {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      padding: 0.55rem 0.65rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #f8fafc;
+      cursor: pointer;
+    }
+
+    .exercise-steps input[type="checkbox"] {
+      inline-size: 1rem;
+      block-size: 1rem;
+      accent-color: var(--accent);
+    }
+
+    .exercise-progress {
+      margin: 0 0 1rem;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .exercise-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 0.9rem;
+    }
+
+    .exercise-actions button {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
+      color: var(--text);
+      padding: 0.5rem 0.8rem;
+      font-family: var(--font-sans);
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+
+    .exercise-actions button.primary {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: var(--accent-contrast);
+    }
+
+    .exercise-log {
+      margin: 0;
+      min-height: 7rem;
+      max-height: 14rem;
+      overflow: auto;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--code-bg);
+      color: var(--code-text);
+      padding: 0.85rem;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      line-height: 1.5;
+      white-space: pre-wrap;
+    }
+
+    .checklist {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .checklist li {
+      padding-left: 1.6rem;
+      position: relative;
+    }
+
+    .checklist li::before {
+      content: "☐";
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+    }
+
+    footer {
+      max-width: 48rem;
+      margin: 0 auto;
+      padding: 0 1.25rem 2rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    @media (max-width: 640px) {
+      .toc-list {
+        flex-direction: column;
+        gap: 0.25rem;
+      }
+
+      section {
+        margin-bottom: 3rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">本文へスキップ</a>
+
+  <header class="hero">
+    <h1>GitHub基礎解説（MVP v1.0）</h1>
+    <p class="lead">Git／GitHub未経験〜少し触ったことがある方向け。用語・フロー・よくあるつまずきを1ページで整理しました。</p>
+  </header>
+
+  <nav class="toc" aria-label="ページ内目次">
+    <div class="toc-inner">
+      <p class="toc-title">目次</p>
+      <ul class="toc-list">
+        <li><a href="#github-vs-git">GitHubとは</a></li>
+        <li><a href="#glossary">基本用語集</a></li>
+        <li><a href="#flow">基本操作フロー</a></li>
+        <li><a href="#walkthrough">実演手順</a></li>
+        <li><a href="#exercise">演習エリア</a></li>
+        <li><a href="#branch-rules">ブランチ運用</a></li>
+        <li><a href="#pr-writing">PRの書き方</a></li>
+        <li><a href="#issues">Issueの使い方</a></li>
+        <li><a href="#troubleshooting">よくあるミス</a></li>
+        <li><a href="#checklist">学習チェックリスト</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main id="main">
+    <!-- 1 -->
+    <section id="github-vs-git" aria-labelledby="h-github">
+      <h2 id="h-github">GitHubとは（Gitとの違い）</h2>
+      <div class="summary">
+        <p><span class="term">Git</span>はパソコン上で履歴を記録する「バージョン管理ツール」です。</p>
+        <p><span class="term">GitHub</span>はその履歴やコードをインターネット上で共有・レビューする「ホスティング／コラボレーションサービス」です。</p>
+        <p>ローカルで作業し、GitHubに送ることでチームと同じコードベースで進められます。</p>
+      </div>
+      <ul>
+        <li><span class="term">Git</span>：コミット・ブランチなど、履歴の操作は主に自分のマシンで行う。</li>
+        <li><span class="term">GitHub</span>：リモートの<span class="term">リポジトリ</span>、<span class="term">Pull Request</span>、<span class="term">Issue</span>、レビュー、CI 連携など。</li>
+        <li>別サービスに <span class="term">GitLab</span> や <span class="term">Bitbucket</span> もあるが、概念（clone / push / PR）はほぼ同じ。</li>
+      </ul>
+      <aside class="note">
+        <strong>初心者向け補足</strong>
+        「GitがなくてもGitHubのWebだけ」では、本格的な開発フローは組みにくいです。まずは Git の基本コマンドと GitHub の画面操作の両方を触ると理解が早いです。
+      </aside>
+    </section>
+
+    <!-- 2 -->
+    <section id="glossary" aria-labelledby="h-glossary">
+      <h2 id="h-glossary">基本用語集</h2>
+      <div class="summary">
+        <p>日常開発で必ず出る5語＋αを、短く押さえます。</p>
+        <p>名前を覚えるより「いつ使うか」をイメージすると定着しやすいです。</p>
+        <p>以下はすべてこのページの他セクションでも繰り返し登場します。</p>
+      </div>
+      <ul>
+        <li><span class="term">Repository（リポジトリ）</span>：プロジェクトのファイルと履歴の入れ物。ローカル／GitHub 上の両方に存在しうる。</li>
+        <li><span class="term">Commit（コミット）</span>：ある時点の変更を履歴として1単位で記録する操作・その記録そのもの。</li>
+        <li><span class="term">Branch（ブランチ）</span>：履歴の分岐。機能開発は新しいブランチで行い、後でまとめて取り込むのが一般的。</li>
+        <li><span class="term">Pull Request（PR）</span>：ブランチの変更を取り込んでもらうための依頼。レビュー・議論・マージの場。</li>
+        <li><span class="term">Issue</span>：バグ・要望・タスクをチケット化し、議論や紐付け（PR とリンク）に使う。</li>
+      </ul>
+      <aside class="note">
+        <strong>初心者向け補足</strong>
+        「コミット＝保存」ではなく「意味のあるまとまりで履歴に刻む」と考えると、あとで見返したときに助かります。
+      </aside>
+    </section>
+
+    <!-- 3 -->
+    <section id="flow" aria-labelledby="h-flow">
+      <h2 id="h-flow">基本操作フロー（5ステップ）</h2>
+      <div class="summary">
+        <p>チーム開発でよく使う流れは「ブランチを切る → 変更してコミット → リモートへ送る → PR → マージ」です。</p>
+        <p>この順番で読めば、画面とターミナルのどちらを開けばよいかが整理できます。</p>
+        <p>下図はその関係のラフ図です（詳細は「実演手順」で手を動かしながら確認）。</p>
+      </div>
+      <div class="flow-diagram" role="img" aria-label="開発フロー: Branch から Commit, Push, Pull Request, Merge の順">
+        <svg viewBox="0 0 520 120" width="520" height="120" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto">
+              <path d="M0,0 L8,3 L0,6 Z" fill="#0d9488" />
+            </marker>
+          </defs>
+          <rect x="8" y="28" width="88" height="44" rx="8" fill="#ffffff" stroke="#0d9488" stroke-width="2" />
+          <text x="52" y="56" text-anchor="middle" font-size="13" font-family="system-ui,sans-serif" fill="#0f172a">Branch</text>
+          <line x1="96" y1="50" x2="118" y2="50" stroke="#0d9488" stroke-width="2" marker-end="url(#arrow)" />
+          <rect x="120" y="28" width="88" height="44" rx="8" fill="#ffffff" stroke="#0d9488" stroke-width="2" />
+          <text x="164" y="56" text-anchor="middle" font-size="13" font-family="system-ui,sans-serif" fill="#0f172a">Commit</text>
+          <line x1="208" y1="50" x2="230" y2="50" stroke="#0d9488" stroke-width="2" marker-end="url(#arrow)" />
+          <rect x="232" y="28" width="88" height="44" rx="8" fill="#ffffff" stroke="#0d9488" stroke-width="2" />
+          <text x="276" y="56" text-anchor="middle" font-size="13" font-family="system-ui,sans-serif" fill="#0f172a">Push</text>
+          <line x1="320" y1="50" x2="342" y2="50" stroke="#0d9488" stroke-width="2" marker-end="url(#arrow)" />
+          <rect x="344" y="20" width="96" height="60" rx="8" fill="#ffffff" stroke="#0d9488" stroke-width="2" />
+          <text x="392" y="48" text-anchor="middle" font-size="12" font-family="system-ui,sans-serif" fill="#0f172a">Pull Request</text>
+          <text x="392" y="66" text-anchor="middle" font-size="12" font-family="system-ui,sans-serif" fill="#0f172a">(GitHub)</text>
+          <line x1="440" y1="50" x2="462" y2="50" stroke="#0d9488" stroke-width="2" marker-end="url(#arrow)" />
+          <rect x="464" y="28" width="52" height="44" rx="8" fill="#0d9488" stroke="#0d9488" stroke-width="2" />
+          <text x="490" y="56" text-anchor="middle" font-size="13" font-family="system-ui,sans-serif" fill="#ffffff">Merge</text>
+        </svg>
+      </div>
+      <ol>
+        <li><strong>ブランチを作成・切り替え</strong>：作業単位（機能・修正）ごとに分岐する。</li>
+        <li><strong>ファイルを編集</strong>：エディタで変更。ここではまだ履歴に載らない。</li>
+        <li><strong>ステージ → コミット</strong>：意図した変更だけをまとめて履歴に残す。</li>
+        <li><strong>push</strong>：ローカルのコミットを GitHub 上の同名ブランチへ送る。</li>
+        <li><strong>PR 作成 → レビュー → マージ</strong>：既定ブランチ（多くは <span class="term">main</span>）へ取り込む。</li>
+      </ol>
+      <aside class="note">
+        <strong>初心者向け補足</strong>
+        手元だけで完結するのは「ブランチ〜コミット」まで。<span class="term">push</span> 以降は GitHub 上の共有リポジトリと同期するイメージです。
+      </aside>
+    </section>
+
+    <!-- 4 -->
+    <section id="walkthrough" aria-labelledby="h-walk">
+      <h2 id="h-walk">実演手順（リポジトリ作成〜PRマージ）</h2>
+      <div class="summary">
+        <p>GitHub で空のリポジトリを作り、ローカルから変更を送って PR でマージするまでの最短ルートです。</p>
+        <p>URL やブランチ名は自分の環境に読み替えてください。</p>
+        <p>まずは1回通しで実行し、あとから各コマンドの意味を見返すと理解が深まります。</p>
+      </div>
+      <ul>
+        <li>GitHub で <span class="term">New repository</span> を選び、リポジトリ名を決めて作成（README ありでもなしでも可）。</li>
+        <li>表示される HTTPS URL をコピーし、ローカルでクローンする。</li>
+      </ul>
+      <div class="code-block">
+        <button type="button" class="copy-btn" aria-label="コマンドをコピー">コピー</button>
+        <pre><code>git clone https://github.com/あなたのユーザー名/リポジトリ名.git
+cd リポジトリ名</code></pre>
+      </div>
+      <ul>
+        <li>作業用ブランチを作成して切り替える。</li>
+      </ul>
+      <div class="code-block">
+        <button type="button" class="copy-btn" aria-label="コマンドをコピー">コピー</button>
+        <pre><code>git checkout -b feature/first-change</code></pre>
+      </div>
+      <ul>
+        <li>ファイルを編集したあと、変更をステージしてコミットする。</li>
+      </ul>
+      <div class="code-block">
+        <button type="button" class="copy-btn" aria-label="コマンドをコピー">コピー</button>
+        <pre><code>git add .
+git commit -m "docs: 初回の変更を追加"</code></pre>
+      </div>
+      <ul>
+        <li>リモート（GitHub）へブランチごと送る。初回は <span class="term">-u</span> で追跡ブランチを設定。</li>
+      </ul>
+      <div class="code-block">
+        <button type="button" class="copy-btn" aria-label="コマンドをコピー">コピー</button>
+        <pre><code>git push -u origin feature/first-change</code></pre>
+      </div>
+      <ul>
+        <li><strong>PR 作成（GitHub 画面）</strong>：リポジトリページを開く → 黄色バナーの <span class="term">Compare &amp; pull request</span>、または <span class="term">Pull requests</span> タブ → <span class="term">New pull request</span>。</li>
+        <li><span class="term">base</span>（取り込み先、例: <code style="background:#e2e8f0;padding:0 .2em;border-radius:4px;">main</code>）と <span class="term">compare</span>（送る側ブランチ）を確認 → タイトル・説明を入力 → <span class="term">Create pull request</span>。</li>
+        <li>レビュー後、<span class="term">Merge pull request</span> → <span class="term">Confirm merge</span>。ローカルでは <span class="term">main</span> を最新化するときに <code style="background:#e2e8f0;padding:0 .2em;border-radius:4px;">git checkout main</code> と <code style="background:#e2e8f0;padding:0 .2em;border-radius:4px;">git pull</code> を使う。</li>
+      </ul>
+      <aside class="note">
+        <strong>初心者向け補足</strong>
+        <span class="term">git add .</span> は「カレントディレクトリ以下の変更をすべてステージ」です。意図しないファイルが混ざることがあるので、慣れたら <span class="term">git status</span> と <span class="term">git add &lt;ファイル&gt;</span> で選ぶと安全です。
+      </aside>
+    </section>
+
+    <!-- 演習 -->
+    <section id="exercise" aria-labelledby="h-exercise">
+      <h2 id="h-exercise">実演用 演習エリア</h2>
+      <div class="summary">
+        <p>研修や説明時に、受講者と一緒に「今どの手順まで進んだか」を確認するための練習ブロックです。</p>
+        <p>左のチェックを進めると進捗表示が更新され、下のボタンで疑似ターミナルログを出せます。</p>
+        <p>実コマンド実行前のリハーサルとして使ってください。</p>
+      </div>
+      <div class="exercise-area" aria-label="GitHubフロー演習">
+        <ul class="exercise-steps">
+          <li><label><input type="checkbox" data-step="clone" />1. clone してローカルに取得</label></li>
+          <li><label><input type="checkbox" data-step="branch" />2. ブランチを作成（checkout -b）</label></li>
+          <li><label><input type="checkbox" data-step="commit" />3. add / commit で履歴を作成</label></li>
+          <li><label><input type="checkbox" data-step="push" />4. push してGitHubへ共有</label></li>
+          <li><label><input type="checkbox" data-step="pr" />5. PR作成〜マージ確認</label></li>
+        </ul>
+        <p id="exercise-progress" class="exercise-progress" aria-live="polite">進捗: 0 / 5 完了</p>
+        <div class="exercise-actions">
+          <button type="button" class="primary" data-log="demo">疑似ログを出す</button>
+          <button type="button" data-log="clear">ログをクリア</button>
+          <button type="button" data-log="reset">チェックをリセット</button>
+        </div>
+        <pre id="exercise-log" class="exercise-log" aria-live="polite">[ready] 演習を開始できます。</pre>
+      </div>
+      <aside class="note">
+        <strong>使い方のコツ</strong>
+        受講者に「次の1コマンドは何か」を先に答えてもらってからボタンを押すと、受け身になりにくく理解が定着しやすいです。
+      </aside>
+    </section>
+
+    <!-- 5 -->
+    <section id="branch-rules" aria-labelledby="h-branch">
+      <h2 id="h-branch">ブランチ運用ルール</h2>
+      <div class="summary">
+        <p>チームごとに細則は違いますが、「既定ブランチは常にデプロイ可能」「作業は短命ブランチ」がよくある型です。</p>
+        <p>ブランチ名で目的がわかると、PR と Issue のやり取りがスムーズになります。</p>
+        <p>ルールは README や社内ドキュメントに書かれていることが多いので、最初に一通り読む価値があります。</p>
+      </div>
+      <ul>
+        <li><span class="term">main</span>（または <span class="term">master</span>）：製品として安定した状態を置くブランチ。直接 push 禁止のチームも多い。</li>
+        <li>作業ブランチ例：<code style="background:#e2e8f0;padding:0 .2em;border-radius:4px;">feature/ログイン画面</code>、<code style="background:#e2e8f0;padding:0 .2em;border-radius:4px;">fix/計算ミス</code>、<code style="background:#e2e8f0;padding:0 .2em;border-radius:4px;">chore/依存更新</code>。</li>
+        <li>長く放置したブランチはコンフリクトの元。小さめの変更で早めに PR に出す。</li>
+        <li>マージ後はローカルの作業ブランチを削除し、<span class="term">main</span> を pull して次の作業へ。</li>
+      </ul>
+      <aside class="note">
+        <strong>初心者向け補足</strong>
+        「とりあえず main で全部やる」はコンフリクトやレビュー漏れの原因になりやすいです。最初からブランチを切る習慣をつけるとのちが楽です。
+      </aside>
+    </section>
+
+    <!-- 6 -->
+    <section id="pr-writing" aria-labelledby="h-pr">
+      <h2 id="h-pr">Pull Requestの書き方</h2>
+      <div class="summary">
+        <p>PR は「変更のパッケージ」と「レビュアーへの説明書」です。書けば書くほどマージが速くなります。</p>
+        <p>何を・なぜ・どう確認すればよいかを短く明示するのがコツです。</p>
+        <p>Issue 番号を本文に含めると、マージ後に自動で紐付け・クローズできる場合があります（<span class="term">Fixes #123</span> など）。</p>
+      </div>
+      <ul>
+        <li><strong>タイトル</strong>：変更の要約。将来ログを追う人のため、曖昧な「修正」だけは避ける。</li>
+        <li><strong>背景・目的</strong>：1〜3行でよいので「課題」「期待する挙動」を書く。</li>
+        <li><strong>変更内容</strong>：箇条書きでファイル／挙動レベル。スクリーンショットや GIF は UI 変更に有効。</li>
+        <li><strong>確認手順</strong>：レビュアーが手元で再現できるチェック項目（例：ログイン → 設定画面を開く）。</li>
+        <li><strong>リスク・未対応</strong>：既知の制限があれば先に書くと後戻りが減る。</li>
+      </ul>
+      <aside class="note">
+        <strong>初心者向け補足</strong>
+        ドラフト PR（<span class="term">Draft</span>）を使えば、「まだ途中だが早めに見てほしい」と伝えつつ、誤マージを防げます。
+      </aside>
+    </section>
+
+    <!-- 7 -->
+    <section id="issues" aria-labelledby="h-issue">
+      <h2 id="h-issue">Issueの使い方</h2>
+      <div class="summary">
+        <p>Issue は「やること・直すこと」のチケット。会話の履歴と合意が残るのが強みです。</p>
+        <p>ラベル・マイルストーン・担当者で整理すると、優先度が見えやすくなります。</p>
+        <p>PR 本文やコミットメッセージから Issue を参照すると、トレーサビリティが上がります。</p>
+      </div>
+      <ul>
+        <li><strong>起票</strong>：<span class="term">Issues</span> → <span class="term">New issue</span>。テンプレートがあるプロジェクトはそれに沿って記入。</li>
+        <li><strong>良い Issue の要素</strong>：現象／再現手順／期待値／環境（OS・ブラウザ・バージョン）。</li>
+        <li><strong>議論</strong>：コメントで補足。決定事項は冒頭か Wiki にまとめると後任に優しい。</li>
+        <li><strong>PR とのリンク</strong>：PR 説明に <span class="term">Closes #番号</span> などを書くとマージ時に Issue を閉じられる（設定により異なる）。</li>
+      </ul>
+      <aside class="note">
+        <strong>初心者向け補足</strong>
+        「口頭だけで終わらせる」と同じ議題が何度も出がちです。小さくても Issue に残すクセがあるとチーム全体が楽になります。
+      </aside>
+    </section>
+
+    <!-- 8 -->
+    <section id="troubleshooting" aria-labelledby="h-ts">
+      <h2 id="h-ts">よくあるミスと対処</h2>
+      <div class="summary">
+        <p>誰でも一度は踏むポイントです。メッセージをそのまま検索すると公式ドキュメントや Stack Overflow に当たります。</p>
+        <p>迷ったら <span class="term">git status</span> とリモートのブランチ状態を確認するのが近道です。</p>
+        <p>破壊的操作（履歴の書き換えなど）はチームルール確認のうえで。</p>
+      </div>
+      <ul>
+        <li><strong>push が拒否される</strong>：リモートに自分にないコミットがある。先に <span class="term">git pull</span>（または <span class="term">git pull --rebase</span>）で取り込み、再度 push。</li>
+        <li><strong>間違ったブランチでコミットした</strong>：まだ push していなら <span class="term">git reset</span> や新ブランチ切り出しでリカバリ可能。push 済みならチームに相談。</li>
+        <li><strong>コンフリクト</strong>：同じ行を別ブランチが編集。エディタで衝突マーカーを解消し、コミットして push。</li>
+        <li><strong>.env など秘密を commit してしまった</strong>：すぐに管理者へ。履歴から消す必要がある場合は専用手順が必要。</li>
+        <li><strong>巨大ファイルを入れてしまった</strong>：リポジトリが重くなる。<span class="term">git lfs</span> の検討や、履歴からの除去が必要になることがある。</li>
+      </ul>
+      <aside class="note">
+        <strong>初心者向け補足</strong>
+        「わからないまま <span class="term">force push</span>」は他の人の履歴を壊すことがあります。共用ブランチでは禁止・要許可が多いです。
+      </aside>
+    </section>
+
+    <!-- 9 -->
+    <section id="checklist" aria-labelledby="h-check">
+      <h2 id="h-check">学習後チェックリスト</h2>
+      <div class="summary">
+        <p>自分で説明できるか・手が動くかを確認するための簡易リストです。</p>
+        <p>紙に印刷してチェックしても、ブラウザのブックマークと一緒に使っても構いません。</p>
+        <p>曖昧な項目があれば、このページの該当セクションに戻って復習してください。</p>
+      </div>
+      <ul class="checklist">
+        <li>Git と GitHub の違いを一言で言える。</li>
+        <li>Repository / Commit / Branch / PR / Issue を自分の言葉で説明できる。</li>
+        <li>ブランチを切り、コミットし、push し、PR を作成する一連が一人でできる。</li>
+        <li>PR に「目的・変更・確認手順」を書ける。</li>
+        <li>Issue に再現手順を書ける。</li>
+        <li>push が拒否されたとき、pull してから再度試す方針を知っている。</li>
+        <li>コンフリクトが「同時編集の衝突」だと理解している。</li>
+      </ul>
+      <aside class="note">
+        <strong>初心者向け補足</strong>
+        全部にチェックがつかなくても問題ありません。ハンズオンを繰り返すほど、説明できる項目が増えていきます。
+      </aside>
+    </section>
+  </main>
+
+  <footer>
+    <p>GitHub基礎解説 MVP v1.0 — 単一ページ教材。画像は SVG のみで軽量表示を想定しています。</p>
+  </footer>
+
+  <script>
+    document.querySelectorAll(".code-block").forEach(function (block) {
+      var btn = block.querySelector(".copy-btn");
+      var pre = block.querySelector("pre");
+      if (!btn || !pre) return;
+      btn.addEventListener("click", function () {
+        var text = pre.textContent || "";
+        navigator.clipboard.writeText(text).then(function () {
+          var prev = btn.textContent;
+          btn.textContent = "済";
+          setTimeout(function () {
+            btn.textContent = prev;
+          }, 1500);
+        });
+      });
+    });
+
+    (function () {
+      var stepInputs = document.querySelectorAll('.exercise-steps input[type="checkbox"]');
+      var progress = document.getElementById("exercise-progress");
+      var log = document.getElementById("exercise-log");
+      var actions = document.querySelectorAll(".exercise-actions button");
+
+      if (!stepInputs.length || !progress || !log || !actions.length) return;
+
+      function updateProgress() {
+        var done = 0;
+        stepInputs.forEach(function (el) {
+          if (el.checked) done += 1;
+        });
+        progress.textContent = "進捗: " + done + " / " + stepInputs.length + " 完了";
+        if (done === stepInputs.length) {
+          log.textContent += "\n[ok] すべての手順が完了しました。PRマージまで説明できます。";
+          log.scrollTop = log.scrollHeight;
+        }
+      }
+
+      stepInputs.forEach(function (el) {
+        el.addEventListener("change", updateProgress);
+      });
+
+      actions.forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var mode = btn.getAttribute("data-log");
+          if (mode === "clear") {
+            log.textContent = "[ready] ログをクリアしました。";
+            return;
+          }
+          if (mode === "reset") {
+            stepInputs.forEach(function (el) {
+              el.checked = false;
+            });
+            updateProgress();
+            log.textContent = "[ready] チェックをリセットしました。";
+            return;
+          }
+          if (mode === "demo") {
+            log.textContent = [
+              "$ git clone https://github.com/example/demo.git",
+              "Cloning into 'demo'...",
+              "$ git checkout -b feature/demo",
+              "Switched to a new branch 'feature/demo'",
+              "$ git add .",
+              "$ git commit -m \"docs: add demo content\"",
+              "[feature/demo 1a2b3c4] docs: add demo content",
+              "$ git push -u origin feature/demo",
+              "remote: Create a pull request for 'feature/demo' on GitHub",
+              "[next] GitHub画面でPRを作成してレビュー依頼"
+            ].join("\n");
+            log.scrollTop = log.scrollHeight;
+          }
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
